@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
 .container {
-	@apply mx-auto px-4;
+	@apply mx-auto;
+}
+.card {
+	@apply w-3/12 px-4;
+}
+
+.card .info .title {
+	@apply text-[20px] font-bold mt-4;
+}
+
+.card .info .price {
+	@apply text-[24px] font-bold;
 }

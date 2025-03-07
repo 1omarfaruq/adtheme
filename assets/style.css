@@ -39,3 +39,18 @@ h6 {
 	font-family: "Integral CF", Arial, sans-serif;
 	font-weight: 700;
 }
+
+.testmonial_carosal > svg {
+	position: absolute;
+	right: 30px;
+	top: -30px;
+	cursor: pointer;
+}
+
+.testmonial_carosal > svg:last-child {
+	right: 0;
+}
+.testmonial_carosal .slick-list {
+	margin-left: -12px;
+	margin-right: -12px;
+}
