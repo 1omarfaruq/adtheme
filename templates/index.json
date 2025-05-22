@@ -1,14 +1,5 @@
 {
 	"sections": {
-		"announcement_bar": {
-			"type": "announcement-bar",
-			"description": "This is an announcement section.",
-			"content": "<p>Welcome to our website! We are glad to have you here.</p>"
-		},
-		"header": {
-			"type": "header",
-			"description": "This is a header section for navigation."
-		},
 		"hero": {
 			"type": "hero",
 			"description": "This is a hero section."
@@ -28,20 +19,7 @@
 		"category_boxes": {
 			"type": "category-boxes",
 			"description": "This is a category boxes section."
-		},
-		"footer": {
-			"type": "footer",
-			"description": "This is a footer section."
 		}
 	},
-	"order": [
-		"announcement_bar",
-		"header",
-		"hero",
-		"brands",
-		"new_arrivals",
-		"top_selling",
-		"category_boxes",
-		"footer"
-	]
+	"order": ["hero", "brands", "new_arrivals", "top_selling", "category_boxes"]
 }

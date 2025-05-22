@@ -1,0 +1,19 @@
+{
+    "name": "Header Group",
+    "type": "header",
+    "sections": {
+        "announcement_bar": {
+            "type": "announcement-bar",
+            "description": "This is an announcement section.",
+            "content": "<p>Welcome to our website! We are glad to have you here.</p>"
+        },
+        "header": {
+            "type": "header",
+            "description": "This is a header section for navigation."
+        }
+    },
+    "order": [
+        "announcement_bar",
+        "header"
+    ],
+}

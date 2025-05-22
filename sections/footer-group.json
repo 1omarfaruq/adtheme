@@ -1,0 +1,11 @@
+{
+	"name": "Footer Group",
+	"type": "footer",
+	"sections": {
+		"footer": {
+			"type": "footer",
+			"description": "This is a footer section."
+		}
+	},
+	"order": ["footer"]
+}
