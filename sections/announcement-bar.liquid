@@ -1,17 +1,37 @@
 <div class="bg-black">
     <div class="container text-center text-white py-[10px]">
-        Sign up and get 20% off to your first order. <span class="font-semibold hover:underline cursor-pointer">Sign Up Now</span>
+        {{ section.settings.announcementText }} {% if section.settings.show_sign_link %}<a href="{{ section.settings.sign_up_link_url }}" class="font-semibold hover:underline cursor-pointer">{{ section.settings.sign_up_link_text }}</a>{% endif %}
     </div>
 </div>
+
 {% schema %}
 {
     "name": "Announcement Bar",
     "settings": [
         {
             "type": "text",
-            "id": "announcement_text",
+            "id": "announcementText",
             "label": "Announcement Text",
             "default": "Sign up and get 20% off to your first order."
+        },
+        {
+            "type": "checkbox",
+            "id": "show_sign_link",
+            "label": "Show Sign Up Link",
+            "default": true
+        },
+        {
+            "type": "text",
+            "id": "sign_up_link_text",
+            "label": "Sign Up Link Text",
+            "default": "Sign Up Now",
+            "visible_if": "{{ section.settings.show_sign_link == true }}",
+        },
+        {
+            "type": "url",
+            "id": "sign_up_link_url",
+            "label": "Sign Up Link URL",
+            "visible_if": "{{ section.settings.show_sign_link == true }}"
         }
     ],
     "presets": [{"name": "Announcement Bar"}],
