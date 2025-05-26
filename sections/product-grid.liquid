@@ -1,0 +1,39 @@
+<div class="container py-[60px]">
+    <h1 class="text-[48px] font-[700] text-center mb-[55px]">{{ section.settings.section_title }}</h1>
+
+    <div class="flex flex-wrap">
+        <div class="-mx-4 w-full flex flex-wrap">
+            {% for item in (1..4) %}
+                {% render 'product-card' %}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+{% schema %}
+{
+    "name": "Product Grid",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Product Grid Section Settings"
+        },
+        {
+            "type": "text",
+            "id": "section_title",
+            "label": "Section Title",
+            "default": "New Arrivals"
+        },
+        {
+            "type": "collection",
+            "id": "collection",
+            "label": "Select Collection",
+        }
+    ],
+    "disabled_on": {
+        "groups": ["header", "footer"],
+    },
+    "presets": [{"name": "Product Grid"}],
+}
+{% endschema %}
