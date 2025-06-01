@@ -3,12 +3,14 @@
 
     <div class="flex flex-wrap">
         <div class="-mx-4 w-full flex flex-wrap">
-            {% for item in (1..4) %}
-                {% render 'product-card' %}
-            {% endfor %}
+            {% if section.settings.collection %}
+                {% assign products = section.settings.collection.products | reverse %}
+                {% for product in products limit:4 %}
+                    {% render 'product-card', product: product %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
-
 </div>
 
 {% schema %}

@@ -1,10 +1,15 @@
 <div class="card">
     <div class="imgae">
-        <img class="w-full" src="{{ 'p_1.png' | asset_url }}" alt="Product Image">
-        
+        {% if product.featured_image %}
+            <a href="{{ product.url }}">
+                {{ product.featured_image | image_url: width: 250 | image_tag: alt: product.title, width: 250, height: 250 }}
+            </a>
+        {% else %}
+            <img class="w-full" src="{{ 'p_1.png' | asset_url }}" alt="Product Image" width="250" height="250">
+        {% endif %}
     </div>
     <div class="info">
-        <div class="title">T-SHIRT WITH TAPE DETAILS</div>
+        <div class="title"><a href="{{ product.url }}">{{ product.title }}</a></div>
         <div class="flex items-center" >
             <svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9.24494 0.255005L11.8641 5.89491L18.0374 6.6431L13.4829 10.8769L14.679 16.9793L9.24494 13.956L3.8109 16.9793L5.00697 10.8769L0.452479 6.6431L6.62573 5.89491L9.24494 0.255005Z" fill="#FFC633"/>
@@ -28,12 +33,13 @@
         </div>
         <div class="price">
             <span>
-                $120
+                {{ product.price | money_without_trailing_zeros }}
             </span>
             <span class="ml-2 line-through text-[#a3a0a0]">
-                $260
+                {{ product.compare_at_price | money_without_trailing_zeros}}
             </span>
-            <span class="ml-2 bg-red-100 text-red-400 text-[14px] text-center py-[3px] px-2 rounded-full">-20%</span>
+            {% assign percent_off = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round %}
+            <span class="ml-2 bg-red-100 text-red-400 text-[14px] text-center py-[3px] px-2 rounded-full">{{ percent_off }}%</span>
         </div>
     </div>
 </div>

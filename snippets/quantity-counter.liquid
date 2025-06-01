@@ -1,0 +1,33 @@
+<div class="flex rounded-full items-center px-4 bg-gray-100">
+  <button type="button" id="btn-dec" class="px-2 py-1 text-lg cursor-pointer">-</button>
+  <span id="quantity" class="px-4">1</span>
+  <button type="button" id="btn-inc" class="px-2 py-1 text-lg cursor-pointer">+</button>
+</div>
+
+<input type="hidden" name="quantity" value="1" id="quantity-input">
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function () {
+    let quantity = 1;
+
+    document.getElementById('btn-inc').addEventListener('click', function () {
+      quantity++;
+      document.getElementById('quantity').textContent = quantity;
+      document.getElementById('quantity-input').value = quantity;
+      if (quantity > 1) {
+        document.getElementById('btn-dec').disabled = false;
+      }
+    });
+
+    document.getElementById('btn-dec').addEventListener('click', function () {
+      if (quantity > 1) {
+        quantity--;
+        document.getElementById('quantity').textContent = quantity;
+        document.getElementById('quantity-input').value = quantity;
+        if (quantity === 1) {
+          document.getElementById('btn-dec').disabled = true;
+        }
+      }
+    });
+  });
+{% endjavascript %}

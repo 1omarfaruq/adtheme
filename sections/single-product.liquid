@@ -1,0 +1,180 @@
+<div class="container">
+  <ul class="flex gap-2 text-[16px] font-[500] text-[#333] mt-6">
+    <li>Home</li>
+    <li>></li>
+    <li>Shop</li>
+  </ul>
+
+  <div class="flex flex-col md:flex-row gap-8 mt-6">
+    <!-- Gallery Section (1/2 width on desktop, full width on mobile) -->
+    <div class="w-full md:w-1/2">
+      <div class="flex flex-col md:flex-row gap-4">
+        <!-- Main Image -->
+        <div class="w-full h-[300px] md:h-[600px] md:w-[600px]">
+          {{ product.images.first | image_url: width: 600 | image_tag }}
+        </div>
+
+        <!-- Thumbnails (stacked vertically on desktop, horizontally on mobile) -->
+        <div class="flex md:flex-col gap-2 md:gap-4 overflow-x-auto md:overflow-visible">
+          {% for image in product.images %}
+            <div class="min-w-[80px] w-[80px] h-[80px] md:w-[100px] md:h-[100px] flex-shrink-0">
+              {{
+                image.src
+                | image_url: width: 200
+                | image_tag: class: 'w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity'
+              }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Info Section (1/2 width on desktop, full width on mobile) -->
+    <div class="w-full md:w-1/2 info-box flex flex-col gap-4">
+      <h1 class="text-2xl font-bold">{{ product.title }}</h1>
+
+      <!-- Rating -->
+      <div class="flex items-center">
+        {% for i in (1..5) %}
+          <svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.24494 0.255005L11.8641 5.89491L18.0374 6.6431L13.4829 10.8769L14.679 16.9793L9.24494 13.956L3.8109 16.9793L5.00697 10.8769L0.452479 6.6431L6.62573 5.89491L9.24494 0.255005Z"
+                  fill="{% if i <= 4 %}#FFC633{% else %}#E0E0E0{% endif %}"/>
+          </svg>
+        {% endfor %}
+        <div class="ml-2">4.5/<span class="text-[#a3a0a0]">5</span></div>
+      </div>
+
+      <!-- Price -->
+      <div class="price">
+        <span class="text-lg font-semibold">
+          {{ product.price | money_without_trailing_zeros }}
+        </span>
+        {% if product.compare_at_price > product.price %}
+          <span class="ml-2 line-through text-[#a3a0a0]">
+            {{ product.compare_at_price | money_without_trailing_zeros }}
+          </span>
+          {% assign percent_off = product.compare_at_price
+            | minus: product.price
+            | times: 100.0
+            | divided_by: product.compare_at_price
+            | round
+          %}
+          <span class="ml-2 bg-red-100 text-red-400 text-[14px] text-center py-[3px] px-2 rounded-full">
+            {{ percent_off }}% OFF
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Description -->
+      <p class="text-gray-700">{{ product.description }}</p>
+
+      {% form 'product', product %}
+        <div class="flex items-center gap-2">
+          {% if product.variants.size > 1 %}
+            <div class="flex items-center">
+              <label for="color" class="mr-2">variants:</label>
+              <select
+                name="id"
+                class="border border-gray-300 rounded px-2 py-1"
+                data-variants="{{ product.variants | json | escape }}"
+              >
+                {% for variant in product.variants %}
+                  <option
+                    value="{{ variant.id }}"
+                    data-price="{{ variant.price }}"
+                    data-compare-price="{{ variant.compare_at_price | default: '' }}"
+                  >
+                    {{ variant.title }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          {% else %}
+            <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+          {% endif %}
+        </div>
+
+        <div class="flex items-center gap-4 mt-4">
+          {% render 'quantity-counter', product %}
+
+          <!-- Add to Cart Button -->
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+            Add to Cart
+          </button>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+</div>
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function () {
+    const variantSelect = document.querySelector('select[name="id"]');
+    const priceElement = document.querySelector('.price .text-lg');
+    const comparePriceElement = document.querySelector('.price .line-through');
+    const discountBadge = document.querySelector('.price .bg-red-100');
+    const addToCartBtn = document.querySelector('button[type="submit"]');
+
+    // Format money helper
+    const formatMoney = (cents) => {
+      return '$' + (cents / 100).toFixed(2).replace(/\.00$/, '');
+    };
+
+    // Update price display
+    const updatePriceDisplay = (variant) => {
+      if (!variant) return;
+
+      // Update current price
+      if (priceElement) {
+        priceElement.textContent = formatMoney(variant.price);
+      }
+
+      // Update compare price and discount
+      if (comparePriceElement && discountBadge) {
+        if (variant.compare_at_price > variant.price) {
+          comparePriceElement.textContent = formatMoney(variant.compare_at_price);
+          comparePriceElement.style.display = 'inline';
+
+          const discountPercent = Math.round(
+            ((variant.compare_at_price - variant.price) / variant.compare_at_price) * 100
+          );
+          discountBadge.textContent = discountPercent + '% OFF';
+          discountBadge.style.display = 'inline';
+        } else {
+          comparePriceElement.style.display = 'none';
+          discountBadge.style.display = 'none';
+        }
+      }
+
+      // Update button state
+      if (addToCartBtn) {
+        addToCartBtn.disabled = !variant.available;
+        addToCartBtn.textContent = variant.available ? 'Add to Cart' : 'Sold Out';
+      }
+    };
+
+    // Handle variant change
+    if (variantSelect) {
+      variantSelect.addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const variant = {
+          id: this.value,
+          price: parseInt(selectedOption.dataset.price),
+          compare_at_price: parseInt(selectedOption.dataset.comparePrice) || 0,
+          available: true, // You may need to add availability data
+        };
+        updatePriceDisplay(variant);
+      });
+
+      // Initialize with first variant
+      const initialOption = variantSelect.options[variantSelect.selectedIndex];
+      const initialVariant = {
+        id: variantSelect.value,
+        price: parseInt(initialOption.dataset.price),
+        compare_at_price: parseInt(initialOption.dataset.comparePrice) || 0,
+        available: true,
+      };
+      updatePriceDisplay(initialVariant);
+    }
+  });
+{% endjavascript %}
